@@ -1,0 +1,68 @@
+doctype html
+html
+    head
+        title Authorization
+        link(rel='stylesheet', href='/css/index.css')
+        script.
+            document.addEventListener('DOMContentLoaded', () => {
+                const loginButton = document.getElementById('login-button');
+                loginButton.addEventListener('click', async () => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+
+                        if (response.ok) {
+                            localStorage.setItem('username', username);
+                            window.location.href = '/chat';
+                        } else {
+                            const errorData = await response.json();
+                            alert(errorData.message || 'Login failed');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+
+                const signUpButton = document.getElementById('sign-up-button');
+                signUpButton.addEventListener('click', async () => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const response = await fetch('/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+
+                        if (response.ok) {
+                            alert('Registration successful! You can now log in.');
+                        } else {
+                            const errorData = await response.json();
+                            alert(errorData.message || 'Registration failed');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+    body
+        .form-container
+            h2 Welcome to the Chat App
+            form#auth-form
+                label(for='username') Username:
+                input(type='text' id='username' name='username' required)
+                br
+                label(for='password') Password:
+                input(type='password' id='password' name='password' required)
+                br
+                button(type='button' id='login-button') Log In
+                button(type='button' id='sign-up-button') Sign Up

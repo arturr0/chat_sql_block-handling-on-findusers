@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authorization</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-container {
+            width: 300px;
+            margin: auto;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Authorization</h2>
+        <form id="auth-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button type="submit" id="sign-in-button">Sign In</button>
+            <button type="submit" id="sign-up-button">Sign Up</button>
+        </form>
+    </div>
+
+    <script>
+        const signInButton = document.getElementById('sign-in-button');
+        const signUpButton = document.getElementById('sign-up-button');
+
+        // Sign In
+        signInButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('accessToken', data.token);
+                    window.location.href = '/chat.html'; // Redirect to chat page
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        // Sign Up
+        signUpButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    alert('Registration successful! Redirecting to chat...');
+                    const data = await response.json();
+                    localStorage.setItem('accessToken', data.token);
+                    window.location.href = '/chat.html'; // Redirect to chat page after registration
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+h1 {
+    a {
+      color: red;
+    }
+  }
+  .chat-bubble {
+    position: relative;
+    background-color: #f1f0f0;
+    padding: 10px 20px;
+    border-radius: 15px;
+    max-width: 250px;
+    margin: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* The triangle at the bottom left */
+.chat-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid #f1f0f0; /* Same color as the bubble */
+    border-top: 15px solid transparent;
+}

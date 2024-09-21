@@ -1,0 +1,54 @@
+doctype html
+html
+    head
+        title Authorization
+        link(rel="stylesheet", href="css/style.css")
+        script.
+            document.addEventListener('DOMContentLoaded', () => {
+                // Check if there's an access token in localStorage
+                const accessToken = localStorage.getItem('accessToken');
+
+                if (accessToken) {
+                    // If the user is already logged in, redirect to chat
+                    window.location.href = '/chat';
+                }
+
+                // Event listener for the login button
+                const loginButton = document.getElementById('login-button');
+                loginButton.addEventListener('click', async () => {
+                    // Trigger the login process
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            localStorage.setItem('accessToken', data.token); // Store token
+                            window.location.href = '/chat'; // Redirect to chat page
+                        } else {
+                            const errorData = await response.json();
+                            alert(errorData.message || 'Login failed');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+    body
+        .form-container
+            h2 Welcome to the Chat App
+            form#auth-form
+                label(for="username") Username:
+                input(type="text", id="username", name="username", required)
+                br
+                label(for="password") Password:
+                input(type="password", id="password", name="password", required)
+                br
+                button(type="button", id="login-button") Log In

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+    <h1>Chat</h1>
+    <ul id="messages"></ul>
+    <form id="chat-form">
+        <input id="message" autocomplete="off" />
+        <button>Send</button>
+    </form>
+    <div class="chat-bubble">
+        <p>This is a message!</p>
+    </div>
+    <script>
+        const socket = io();
+        const messages = document.getElementById('messages');
+        const form = document.getElementById('chat-form');
+        const input = document.getElementById('message');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = input.value;
+            const user = localStorage.getItem('username'); // Retrieve username from localStorage
+            if (message) {
+                socket.emit('chatMessage', { user, message });
+                input.value = '';
+            }
+        });
+
+        socket.on('message', (data) => {
+            const item = document.createElement('li');
+            item.textContent = `${data.user}: ${data.message}`;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        // Get username from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = prompt('Enter your username:');
+            localStorage.setItem('username', username);
+        });
+    </script>
+</body>
+</html>

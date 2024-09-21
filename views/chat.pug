@@ -1,0 +1,18 @@
+doctype html
+html
+    head
+        title Chat
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js')
+        link(rel='stylesheet' href='/css/index.css')
+    body
+        h1 Chat
+        ul#messages
+        form#chat-form
+            input#rec(autocomplete='off')
+            input#message(autocomplete='off')
+            button Send
+        form#findUser
+            input#find(autocomplete='off')
+            button Find
+        div#users
+        script(src='/chat.js' type='text/javascript')
